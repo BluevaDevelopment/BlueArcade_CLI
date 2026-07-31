@@ -35,7 +35,7 @@ class BamoduleContainer private constructor(
         private const val MAX_TOTAL_UNCOMPRESSED_BYTES = 200L * 1024 * 1024
         private const val MAX_SINGLE_ENTRY_BYTES = 50L * 1024 * 1024
 
-        val ALLOWED_ASSET_EXTENSIONS = setOf("png", "jpg", "jpeg", "schem", "nbt")
+        val ALLOWED_ASSET_EXTENSIONS = setOf("png", "jpg", "jpeg", "schem", "nbt", "nbs")
 
         @Throws(IOException::class)
         fun open(file: File): BamoduleContainer {
