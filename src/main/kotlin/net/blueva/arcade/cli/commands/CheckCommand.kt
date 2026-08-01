@@ -4,8 +4,8 @@ import net.blueva.arcade.cli.format.BamoduleContainer
 import net.blueva.arcade.cli.format.ContainerValidationException
 import net.blueva.arcade.cli.format.ManifestParseException
 import net.blueva.arcade.cli.format.ManifestParser
-import org.luaj.vm2.LuaError
-import org.luaj.vm2.lib.jse.JsePlatform
+import net.blueva.luak.LuaError
+import net.blueva.luak.lib.jvm.JvmPlatform
 import java.io.File
 
 /**
@@ -88,7 +88,7 @@ object CheckCommand {
 
     private fun checkLuaSyntax(file: File, findings: MutableList<Finding>) {
         try {
-            val globals = JsePlatform.standardGlobals()
+            val globals = JvmPlatform.standardGlobals()
             globals.load(file.readText(Charsets.UTF_8), file.name)
         } catch (e: LuaError) {
             findings += Finding(Severity.ERROR, "${file.name}: Lua syntax error: ${e.message}")

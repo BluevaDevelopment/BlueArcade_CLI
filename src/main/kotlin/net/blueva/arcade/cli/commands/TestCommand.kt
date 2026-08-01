@@ -1,11 +1,11 @@
 package net.blueva.arcade.cli.commands
 
-import org.luaj.vm2.LuaError
-import org.luaj.vm2.LuaTable
-import org.luaj.vm2.LuaValue
-import org.luaj.vm2.lib.ThreeArgFunction
-import org.luaj.vm2.lib.TwoArgFunction
-import org.luaj.vm2.lib.jse.JsePlatform
+import net.blueva.luak.LuaError
+import net.blueva.luak.LuaTable
+import net.blueva.luak.LuaValue
+import net.blueva.luak.lib.ThreeArgFunction
+import net.blueva.luak.lib.TwoArgFunction
+import net.blueva.luak.lib.jvm.JvmPlatform
 import java.io.File
 
 /**
@@ -57,17 +57,17 @@ object TestCommand {
 
     /** @return list of (testName, errorMessageOrNull) pairs, one per exported test function. */
     private fun runFile(file: File): List<Pair<String, String?>> {
-        val globals = JsePlatform.standardGlobals()
+        val globals = JvmPlatform.standardGlobals()
         installAssertions(globals)
 
         val chunk = try {
-            globals.load(file.readText(Charsets.UTF_8), file.name)
+            globals.load(file.readText(Charsets.UTF_8), file.name)!!
         } catch (e: LuaError) {
             return listOf(file.name to "Lua syntax error: ${e.message}")
         }
 
         val result = try {
-            chunk.call()
+            chunk.call()!!
         } catch (e: LuaError) {
             return listOf(file.name to "error while loading the test file: ${e.message}")
         }
@@ -78,9 +78,10 @@ object TestCommand {
 
         val results = mutableListOf<Pair<String, String?>>()
         val keys = result.keys()
-        for (key in keys) {
-            val name = key.tojstring()
-            val fn = result.get(key)
+        for (keyRaw in keys) {
+            val key = keyRaw!!
+            val name = key.tojstring()!!
+            val fn = result.get(key)!!
             if (!fn.isfunction()) continue
             try {
                 fn.call()
@@ -92,30 +93,37 @@ object TestCommand {
         return results
     }
 
-    private fun installAssertions(globals: org.luaj.vm2.Globals) {
+    private fun installAssertions(globals: net.blueva.luak.Globals) {
         globals.set("assert_eq", object : ThreeArgFunction() {
-            override fun call(actual: LuaValue, expected: LuaValue, message: LuaValue): LuaValue {
+            override fun call(actualRaw: LuaValue?, expectedRaw: LuaValue?, messageRaw: LuaValue?): LuaValue {
+                val actual = actualRaw ?: LuaValue.NIL
+                val expected = expectedRaw ?: LuaValue.NIL
+                val message = messageRaw ?: LuaValue.NIL
                 if (!actual.eq_b(expected)) {
-                    val prefix = if (message.isnil()) "" else "${message.tojstring()}: "
-                    throw LuaError("${prefix}expected ${expected.tojstring()}, got ${actual.tojstring()}")
+                    val prefix = if (message.isnil()) "" else "${message.tojstring()!!}: "
+                    throw LuaError("${prefix}expected ${expected.tojstring()!!}, got ${actual.tojstring()!!}")
                 }
                 return LuaValue.NIL
             }
         })
         globals.set("assert_true", object : TwoArgFunction() {
-            override fun call(value: LuaValue, message: LuaValue): LuaValue {
+            override fun call(valueRaw: LuaValue?, messageRaw: LuaValue?): LuaValue {
+                val value = valueRaw ?: LuaValue.NIL
+                val message = messageRaw ?: LuaValue.NIL
                 if (!value.toboolean()) {
-                    val prefix = if (message.isnil()) "" else "${message.tojstring()}: "
-                    throw LuaError("${prefix}expected true, got ${value.tojstring()}")
+                    val prefix = if (message.isnil()) "" else "${message.tojstring()!!}: "
+                    throw LuaError("${prefix}expected true, got ${value.tojstring()!!}")
                 }
                 return LuaValue.NIL
             }
         })
         globals.set("assert_false", object : TwoArgFunction() {
-            override fun call(value: LuaValue, message: LuaValue): LuaValue {
+            override fun call(valueRaw: LuaValue?, messageRaw: LuaValue?): LuaValue {
+                val value = valueRaw ?: LuaValue.NIL
+                val message = messageRaw ?: LuaValue.NIL
                 if (value.toboolean()) {
-                    val prefix = if (message.isnil()) "" else "${message.tojstring()}: "
-                    throw LuaError("${prefix}expected false, got ${value.tojstring()}")
+                    val prefix = if (message.isnil()) "" else "${message.tojstring()!!}: "
+                    throw LuaError("${prefix}expected false, got ${value.tojstring()!!}")
                 }
                 return LuaValue.NIL
             }
