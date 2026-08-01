@@ -1,6 +1,5 @@
 package net.blueva.arcade.cli.format
 
-import net.blueva.arcade.api.module.ModuleType
 import net.blueva.foundation.config.ConfigFormat
 import net.blueva.foundation.config.ConfigParseException
 import net.blueva.foundation.config.ConfigSection

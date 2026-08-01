@@ -1,6 +1,18 @@
 package net.blueva.arcade.cli.format
 
-import net.blueva.arcade.api.module.ModuleType
+/** Mirrors `net.blueva.arcade.api.module.ModuleType` (kept independent so `cli/` never needs `BlueArcade-API`). */
+enum class ModuleType {
+    MINIGAME,
+    MICROGAME;
+
+    companion object {
+        fun fromString(raw: String?): ModuleType? {
+            if (raw == null) return null
+            val normalized = raw.trim().uppercase()
+            return entries.find { it.name == normalized }
+        }
+    }
+}
 
 /** Parsed, validated contents of a `.bamodule` archive's `module.toml` manifest. */
 data class ModuleManifest(

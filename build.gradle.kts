@@ -9,15 +9,11 @@ plugins {
 
 repositories {
     mavenCentral()
-    mavenLocal()
     maven("https://jitpack.io")
     maven("https://repo.blueva.net/releases")
 }
 
 dependencies {
-    // Requires BlueArcade-API installed locally (`mvn install` on that project) until it publishes
-    // to a public repository.
-    implementation("net.blueva:BlueArcade-API:3.4.1")
     implementation("net.blueva:blueluak-jvm:26.2")
     implementation("com.github.BluevaDevelopment:BlueFoundation:v26.20")
     implementation("com.google.code.gson:gson:2.10.1")

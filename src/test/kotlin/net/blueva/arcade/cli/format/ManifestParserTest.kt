@@ -1,6 +1,5 @@
 package net.blueva.arcade.cli.format
 
-import net.blueva.arcade.api.module.ModuleType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
