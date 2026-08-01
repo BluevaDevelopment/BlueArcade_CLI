@@ -96,8 +96,10 @@ class BamoduleContainer private constructor(
                     }
                 }
                 name.startsWith("resources/") -> {
-                    if (!name.endsWith(".yml") && !name.endsWith(".yaml")) {
-                        throw ContainerValidationException("Only .yml/.yaml files are allowed under resources/, got: $name")
+                    // .json - structured data bundled alongside .yml/.yaml (e.g. speed_builders'
+                    // structure templates), not an opaque binary asset like assets/'s allow-list.
+                    if (!name.endsWith(".yml") && !name.endsWith(".yaml") && !name.endsWith(".json")) {
+                        throw ContainerValidationException("Only .yml/.yaml/.json files are allowed under resources/, got: $name")
                     }
                 }
                 name.startsWith("assets/") -> {
