@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     implementation("net.blueva:blueluak-jvm:26.2")
-    implementation("com.github.BluevaDevelopment:BlueFoundation:v26.20")
+    implementation("net.blueva.foundation:BlueFoundation:26.32")
     implementation("com.google.code.gson:gson:2.10.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
